@@ -1,8 +1,8 @@
 package org.example;
 
 import org.example.model.User;
-import org.example.repository.RoleRepository;
-import org.example.repository.UserRepository;
+import org.example.dao.RoleDao;
+import org.example.dao.UserDao;
 import org.example.service.UserService;
 import org.example.util.HibernateUtil;
 import org.hibernate.SessionFactory;
@@ -12,8 +12,8 @@ public class Main {
     public static void main(String[] args) {
         SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
         Scanner scanner = new Scanner(System.in);
-        UserRepository userRepo = new UserRepository(sessionFactory);
-        RoleRepository roleRepo = new RoleRepository(sessionFactory);
+        UserDao userRepo = new UserDao(sessionFactory);
+        RoleDao roleRepo = new RoleDao(sessionFactory);
         UserService userService = new UserService(userRepo, roleRepo);
 
         while (true) {

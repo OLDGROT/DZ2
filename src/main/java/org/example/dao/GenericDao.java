@@ -1,8 +1,8 @@
-package org.example.repository;
+package org.example.dao;
 
 import java.util.List;
 
-interface GenericRepository<T,ID> {
+interface GenericDao<T,ID> {
     void save(T entity);
     List<T> getAll();
     T getById(ID id);

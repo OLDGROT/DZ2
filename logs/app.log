@@ -22,3 +22,13 @@
 2025-09-28 20:39:57 [main] INFO  o.e.repository.GenericRepositoryImpl - Сохраняем объект User: org.example.model.User@7d88fa9c
 2025-09-28 20:39:57 [main] INFO  o.e.repository.GenericRepositoryImpl - Объект User успешно сохранён
 2025-09-28 20:39:57 [main] INFO  org.example.service.UserService - Пользователь Джщ успешно создан
+2025-09-30 02:09:31 [main] WARN  o.h.e.j.c.i.ConnectionProviderInitiator - HHH000472: Hikari properties were encountered, but the Hikari ConnectionProvider was not found on the classpath; these properties are going to be ignored.
+2025-09-30 02:09:31 [main] WARN  o.hibernate.orm.connections.pooling - HHH10001002: Using built-in connection pool (not intended for production use)
+2025-09-30 02:10:00 [main] INFO  o.e.repository.GenericRepositoryImpl - Получаем все объекты типа Role
+2025-09-30 02:10:01 [main] INFO  o.e.repository.GenericRepositoryImpl - Найдено 2 объектов типа Role
+2025-09-30 02:10:20 [main] INFO  org.example.service.UserService - Создание пользователя: knbfsgd, email=org@example.com, age=23, roleId=2
+2025-09-30 02:10:20 [main] INFO  o.e.repository.GenericRepositoryImpl - Получаем объект Role с id=2
+2025-09-30 02:10:20 [main] INFO  o.e.repository.GenericRepositoryImpl - Объект Role найден: org.example.model.Role@2d74cbbd
+2025-09-30 02:10:20 [main] INFO  o.e.repository.GenericRepositoryImpl - Сохраняем объект User: org.example.model.User@3e2d44f3
+2025-09-30 02:10:21 [main] INFO  o.e.repository.GenericRepositoryImpl - Объект User успешно сохранён
+2025-09-30 02:10:21 [main] INFO  org.example.service.UserService - Пользователь knbfsgd успешно создан

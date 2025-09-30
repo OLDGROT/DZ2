@@ -1,6 +1,5 @@
-package org.example.repository;
+package org.example.dao;
 
-import jakarta.persistence.Id;
 import org.example.exception.RepositoryException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -10,13 +9,13 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class GenericRepositoryImpl<T, ID> implements GenericRepository<T, ID> {
-    private static final Logger logger = LoggerFactory.getLogger(GenericRepositoryImpl.class);
+public class GenericDaoImpl<T, ID> implements GenericDao<T, ID> {
+    private static final Logger logger = LoggerFactory.getLogger(GenericDaoImpl.class);
 
     private final SessionFactory sessionFactory;
     private final Class<T> type;
 
-    public GenericRepositoryImpl(SessionFactory sessionFactory, Class<T> type) {
+    public GenericDaoImpl(SessionFactory sessionFactory, Class<T> type) {
         this.sessionFactory = sessionFactory;
         this.type = type;
     }
