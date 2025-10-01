@@ -2,11 +2,15 @@ package org.example.util;
 
 import org.example.model.*;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HibernateUtil {
     private static final SessionFactory sessionFactory = buildSessionFactory();
+    private static final Logger logger = LoggerFactory.getLogger(HibernateUtil.class);
 
     private static SessionFactory buildSessionFactory() {
         try {
@@ -33,5 +37,15 @@ public class HibernateUtil {
 
     public static void shutdown() {
         getSessionFactory().close();
+    }
+
+    public static void rollbackQuietly(Transaction tx, String context) {
+        if (tx != null) {
+            try {
+                tx.rollback();
+            } catch (RuntimeException re) {
+                logger.error("Ошибка при откате транзакции для {}: {}", context, re.getMessage(), re);
+            }
+        }
     }
 }
