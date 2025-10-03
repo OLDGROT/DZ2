@@ -17,7 +17,7 @@ public class HibernateUtil {
             Configuration configuration = new Configuration();
             configuration.addAnnotatedClass(User.class);
             configuration.addAnnotatedClass(Role.class);
-            configuration.addAnnotatedClass(UserDiscount.class);
+            configuration.addAnnotatedClass(Avatar.class);
             configuration.addAnnotatedClass(UserCourses.class);
             configuration.addAnnotatedClass(Course.class);
             StandardServiceRegistryBuilder registryBuilder =

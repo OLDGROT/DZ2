@@ -14,7 +14,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         UserDao userRepo = new UserDao(sessionFactory);
         RoleDao roleRepo = new RoleDao(sessionFactory);
-        UserService userService = new UserService(userRepo, roleRepo);
+        UserService userService = new UserService(userRepo, roleRepo, sessionFactory);
 
         while (true) {
             System.out.println("1. Создать пользователя");

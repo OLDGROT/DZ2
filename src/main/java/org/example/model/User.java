@@ -1,8 +1,10 @@
 package org.example.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -12,19 +14,25 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false, name = "name")
+    @NotBlank
     private String name;
     @Column(nullable = false, name = "email")
+    @Email
+    @NotBlank
     private String email;
     @Column(name = "age")
+    @NotNull
     private int age;
     @Column(nullable = false, name = "created_at")
     private LocalDateTime createdAt;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name ="role_id")
+    @NotNull
     private Role role;
     @OneToOne
-    @JoinColumn(name = "discount_id")
-    private UserDiscount discount;
+    @JoinColumn(name = "avatar_id")
+    @NotNull
+    private Avatar avatar;
 
     public User() {
     }
@@ -84,12 +92,12 @@ public class User {
         this.role = role;
     }
 
-    public UserDiscount getDiscount() {
-        return discount;
+    public Avatar getAvatar() {
+        return avatar;
     }
 
-    public void setDiscount(UserDiscount discount) {
-        this.discount = discount;
+    public void setAvatar(Avatar avatar) {
+        this.avatar = avatar;
     }
 
     @PrePersist

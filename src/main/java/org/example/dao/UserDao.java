@@ -5,6 +5,6 @@ import org.hibernate.SessionFactory;
 
 public class UserDao extends GenericDaoImpl<User, Long> {
     public UserDao(SessionFactory sessionFactory) {
-        super(sessionFactory, User.class);
+        super(User.class);
     }
 }

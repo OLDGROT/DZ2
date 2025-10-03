@@ -5,6 +5,6 @@ import org.hibernate.SessionFactory;
 
 public class RoleDao extends GenericDaoImpl<Role, Long> {
     public RoleDao(SessionFactory sessionFactory) {
-        super(sessionFactory, Role.class);
+        super(Role.class);
     }
 }
