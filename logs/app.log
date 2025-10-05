@@ -123,3 +123,5 @@ org.example.exception.ServiceException: null
 2025-10-05 07:35:15 [main] INFO  org.example.service.UserService - Получение пользователя по id: 1
 2025-10-05 07:35:15 [main] INFO  org.example.service.UserService - Пользователь найден по id: 1
 2025-10-05 07:35:15 [main] INFO  org.example.service.UserService - Получение всех пользователей
+2025-10-05 14:40:37 [main] WARN  o.h.e.j.c.i.ConnectionProviderInitiator - HHH000472: Hikari properties were encountered, but the Hikari ConnectionProvider was not found on the classpath; these properties are going to be ignored.
+2025-10-05 14:40:37 [main] WARN  o.hibernate.orm.connections.pooling - HHH10001002: Using built-in connection pool (not intended for production use)

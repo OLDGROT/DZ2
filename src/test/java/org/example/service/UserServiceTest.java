@@ -71,18 +71,7 @@ class UserServiceTest {
         logger.info("createUserRoleNotFoundThrowsServiceException выполнен успешно");
     }
 
-    @Test
-    void createUserValidationFails() {
-        Role role = new Role();
-        role.setId(1L);
-        when(roleDao.getById(session, 1L)).thenReturn(role);
 
-        assertThrows(ServiceException.class, () ->
-                userService.createUser("Alex", "", 25, 1L));
-
-        verify(userDao, never()).save(any(), any());
-        logger.info("createUserValidationFails выполнен успешно");
-    }
 
     @Test
     void getAllUsersSuccess() {

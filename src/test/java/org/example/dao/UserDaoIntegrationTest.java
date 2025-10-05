@@ -1,12 +1,11 @@
 package org.example.dao;
 
+import org.example.model.Role;
 import org.example.model.User;
+import org.example.util.TestHibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.*;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
@@ -17,50 +16,44 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class UserDaoIntegrationTest {
 
-    @Container
-    public static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:17")
-            .withDatabaseName("testdb")
-            .withUsername("test")
-            .withPassword("test");
-
     private SessionFactory sessionFactory;
     private UserDao userDao;
 
+    @BeforeEach
+    void cleanDatabase() {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.createMutationQuery("DELETE FROM User").executeUpdate();
+            session.createMutationQuery("DELETE FROM Role").executeUpdate();
+            session.getTransaction().commit();
+        }
+    }
+
+
     @BeforeAll
     void setUp() {
-        Configuration configuration = new Configuration()
-                .addAnnotatedClass(User.class)
-                .setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect")
-                .setProperty("hibernate.hbm2ddl.auto", "update")
-                .setProperty("hibernate.show_sql", "true")
-                .setProperty("hibernate.connection.url", postgres.getJdbcUrl())
-                .setProperty("hibernate.connection.username", postgres.getUsername())
-                .setProperty("hibernate.connection.password", postgres.getPassword())
-                .setProperty("hibernate.connection.driver_class", "org.postgresql.Driver");
-
-        sessionFactory = configuration.buildSessionFactory();
+        sessionFactory = TestHibernateUtil.getSessionFactory();
         userDao = new UserDao(sessionFactory);
+
+        System.out.println("Маппинги Hibernate: " + sessionFactory.getMetamodel().getEntities());
     }
 
     @AfterAll
     void tearDown() {
-        if (sessionFactory != null) {
-            sessionFactory.close();
-        }
+        TestHibernateUtil.shutdown();
     }
 
     @Test
     void testSaveAndGetAll() {
+        Role role = new Role();
+        role.setName("USER");
+
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
+            session.persist(role);
 
-            User user = new User();
-            user.setName("Alex");
-            user.setEmail("alex@mail.com");
-            user.setAge(25);
-
+            User user = new User("Alex", "alex@mail.com", 25, role);
             userDao.save(session, user);
-
             session.getTransaction().commit();
         }
 
@@ -73,15 +66,16 @@ public class UserDaoIntegrationTest {
 
     @Test
     void testGetById() {
+        Role role = new Role();
+        role.setName("ADMIN");
+
         User savedUser;
+
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
+            session.persist(role);
 
-            savedUser = new User();
-            savedUser.setName("John");
-            savedUser.setEmail("john@mail.com");
-            savedUser.setAge(30);
-
+            savedUser = new User("John", "john@mail.com", 30, role);
             userDao.save(session, savedUser);
 
             session.getTransaction().commit();
@@ -96,15 +90,15 @@ public class UserDaoIntegrationTest {
 
     @Test
     void testUpdateAndDelete() {
+        Role role = new Role();
+        role.setName("TESTER");
+
         User user;
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
+            session.persist(role);
 
-            user = new User();
-            user.setName("Mike");
-            user.setEmail("mike@mail.com");
-            user.setAge(28);
-
+            user = new User("Mike", "mike@mail.com", 28, role);
             userDao.save(session, user);
             session.getTransaction().commit();
         }
@@ -117,6 +111,7 @@ public class UserDaoIntegrationTest {
             session.getTransaction().commit();
         }
 
+        // Проверяем обновление
         try (Session session = sessionFactory.openSession()) {
             User updatedUser = userDao.getById(session, user.getId());
             assertEquals(29, updatedUser.getAge());

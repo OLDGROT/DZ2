@@ -28,9 +28,6 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name ="role_id")
     private Role role;
-    @OneToOne
-    @JoinColumn(name = "avatar_id")
-    private Avatar avatar;
 
     public User() {
     }
@@ -90,13 +87,6 @@ public class User {
         this.role = role;
     }
 
-    public Avatar getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(Avatar avatar) {
-        this.avatar = avatar;
-    }
 
     @PrePersist
     protected void onCreate() {
