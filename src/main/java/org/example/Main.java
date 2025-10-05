@@ -1,8 +1,8 @@
 package org.example;
 
 import org.example.model.User;
-import org.example.repository.RoleRepository;
-import org.example.repository.UserRepository;
+import org.example.dao.RoleDao;
+import org.example.dao.UserDao;
 import org.example.service.UserService;
 import org.example.util.HibernateUtil;
 import org.hibernate.SessionFactory;
@@ -12,9 +12,9 @@ public class Main {
     public static void main(String[] args) {
         SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
         Scanner scanner = new Scanner(System.in);
-        UserRepository userRepo = new UserRepository(sessionFactory);
-        RoleRepository roleRepo = new RoleRepository(sessionFactory);
-        UserService userService = new UserService(userRepo, roleRepo);
+        UserDao userRepo = new UserDao(sessionFactory);
+        RoleDao roleRepo = new RoleDao(sessionFactory);
+        UserService userService = new UserService(userRepo, roleRepo, sessionFactory);
 
         while (true) {
             System.out.println("1. Создать пользователя");
@@ -33,11 +33,7 @@ public class Main {
                     System.out.print("Возраст: ");
                     int age = scanner.nextInt();
                     scanner.nextLine();
-                    System.out.println("Доступные роли:");
-                    roleRepo.getAll().forEach(role ->
-                            System.out.println(role.getId() + " - " + role.getName())
-                    );
-                    System.out.print("Выберите ID роли: ");
+                    System.out.println("Роль:");
                     Long roleId = scanner.nextLong();
                     scanner.nextLine();
 
@@ -50,7 +46,7 @@ public class Main {
                 case 3 -> {
                     System.out.print("ID пользователя для удаления: ");
                     Long id = scanner.nextLong();
-                    User user = userRepo.getById(id);
+                    User user = userService.getById( id);
                     if (user != null) userService.deleteUser(user);
                     else System.out.println("Пользователь не найден");
                 }

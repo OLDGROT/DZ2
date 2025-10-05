@@ -1,7 +1,7 @@
-package org.example.repository;
+package org.example.dao;
 
-import jakarta.persistence.Id;
 import org.example.exception.RepositoryException;
+import org.example.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -10,36 +10,30 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class GenericRepositoryImpl<T, ID> implements GenericRepository<T, ID> {
-    private static final Logger logger = LoggerFactory.getLogger(GenericRepositoryImpl.class);
+public class GenericDaoImpl<T, ID> implements GenericDao<T, ID> {
+    private static final Logger logger = LoggerFactory.getLogger(GenericDaoImpl.class);
 
-    private final SessionFactory sessionFactory;
     private final Class<T> type;
 
-    public GenericRepositoryImpl(SessionFactory sessionFactory, Class<T> type) {
-        this.sessionFactory = sessionFactory;
+    public GenericDaoImpl(Class<T> type) {
         this.type = type;
     }
 
     @Override
-    public void save(T entity) {
-        Transaction tx = null;
-        try (Session session = sessionFactory.openSession()) {
+    public void save(Session session, T entity) {
+        try {
             logger.info("Сохраняем объект {}: {}", type.getSimpleName(), entity);
-            tx = session.beginTransaction();
             session.persist(entity);
-            tx.commit();
             logger.info("Объект {} успешно сохранён", type.getSimpleName());
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
             logger.error("Ошибка при сохранении объекта {}: {}", type.getSimpleName(), e.getMessage(), e);
             throw new RepositoryException("Ошибка сохранения:" + type.getSimpleName(), e);
         }
     }
 
     @Override
-    public List<T> getAll() {
-        try (Session session = sessionFactory.openSession()) {
+    public List<T> getAll(Session session) {
+        try  {
             logger.info("Получаем все объекты типа {}", type.getSimpleName());
             List<T> result = session.createQuery("from " + type.getSimpleName(), type).getResultList();
             logger.info("Найдено {} объектов типа {}", result.size(), type.getSimpleName());
@@ -51,8 +45,8 @@ public class GenericRepositoryImpl<T, ID> implements GenericRepository<T, ID> {
     }
 
     @Override
-    public T getById(ID id) {
-        try (Session session = sessionFactory.openSession()) {
+    public T getById(Session session, ID id) {
+        try  {
             logger.info("Получаем объект {} с id={}", type.getSimpleName(), id);
             T entity = session.get(type, id);
             if (entity != null) {
@@ -68,32 +62,25 @@ public class GenericRepositoryImpl<T, ID> implements GenericRepository<T, ID> {
     }
 
     @Override
-    public void update(T entity) {
-        Transaction tx = null;
-        try (Session session = sessionFactory.openSession()) {
+    public void update(Session session, T entity) {
+        try {
             logger.info("Обновляем объект {}: {}", type.getSimpleName(), entity);
-            tx = session.beginTransaction();
             session.merge(entity);
-            tx.commit();
             logger.info("Объект {} успешно обновлён", type.getSimpleName());
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
             logger.error("Ошибка при обновлении объекта {}: {}", type.getSimpleName(), e.getMessage(), e);
             throw new RepositoryException("Ошибка обновления:" + type.getSimpleName(), e);
         }
     }
 
     @Override
-    public void delete(T entity) {
-        Transaction tx = null;
-        try (Session session = sessionFactory.openSession()) {
+    public void delete(Session session, T entity) {
+
+        try {
             logger.info("Удаляем объект {}: {}", type.getSimpleName(), entity);
-            tx = session.beginTransaction();
             session.remove(entity);
-            tx.commit();
             logger.info("Объект {} успешно удалён", type.getSimpleName());
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
             logger.error("Ошибка при удалении объекта {}: {}", type.getSimpleName(), e.getMessage(), e);
             throw new RepositoryException("Ошибка удаления:" + type.getSimpleName(), e);
         }
