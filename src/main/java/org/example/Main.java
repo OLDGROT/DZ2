@@ -33,11 +33,7 @@ public class Main {
                     System.out.print("Возраст: ");
                     int age = scanner.nextInt();
                     scanner.nextLine();
-                    System.out.println("Доступные роли:");
-                    roleRepo.getAll().forEach(role ->
-                            System.out.println(role.getId() + " - " + role.getName())
-                    );
-                    System.out.print("Выберите ID роли: ");
+                    System.out.println("Роль:");
                     Long roleId = scanner.nextLong();
                     scanner.nextLine();
 
@@ -50,7 +46,7 @@ public class Main {
                 case 3 -> {
                     System.out.print("ID пользователя для удаления: ");
                     Long id = scanner.nextLong();
-                    User user = userRepo.getById(id);
+                    User user = userService.getById( id);
                     if (user != null) userService.deleteUser(user);
                     else System.out.println("Пользователь не найден");
                 }

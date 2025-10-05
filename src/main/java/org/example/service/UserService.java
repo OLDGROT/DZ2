@@ -114,4 +114,23 @@ public class UserService {
             throw new ServiceException("Ошибка при удалении пользователя", e);
         }
     }
+
+    public User getById(long id) {
+        Transaction tx = null;
+        try (Session session = sessionFactory.openSession()) {
+            tx = session.beginTransaction();
+            logger.info("Получение пользователя по id: {}", id);
+            User user = userDao.getById(session, id);
+            logger.info("Пользователь найден по id: {}", id);
+            tx.commit();
+            return user;
+        } catch (ValidationException e) {
+            logger.error(e.getMessage());
+        } catch (Exception e) {
+            HibernateUtil.rollbackQuietly(tx, e.getMessage());
+            logger.error("Ошибка при поиске пользователя {}: {}", id, e.getMessage(), e);
+            throw new ServiceException("Ошибка при поиске пользователя по id", e);
+        }
+        return null;
+    }
 }

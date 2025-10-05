@@ -1,6 +1,7 @@
 package org.example.util;
 
 import jakarta.validation.*;
+import org.example.exception.ValidException;
 
 import java.util.Set;
 
@@ -19,7 +20,7 @@ public class ValidationUtil {
                         .append(violation.getMessage())
                         .append("; \n");
             }
-            throw new ValidationException("Ошибка валидации: " + sb.toString());
+            throw new ValidException("Ошибка валидации: " + sb.toString());
         }
     }
 }

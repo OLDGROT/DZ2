@@ -27,11 +27,9 @@ public class User {
     private LocalDateTime createdAt;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name ="role_id")
-    @NotNull
     private Role role;
     @OneToOne
     @JoinColumn(name = "avatar_id")
-    @NotNull
     private Avatar avatar;
 
     public User() {
