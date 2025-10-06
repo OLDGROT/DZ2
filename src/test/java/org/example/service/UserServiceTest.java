@@ -48,7 +48,7 @@ class UserServiceTest {
 
     @Test
     void createUserSuccess() {
-        Role role = new Role();
+        Role role = new Role("ADMIN");
         role.setId(1L);
         when(roleDao.getById(session, 1L)).thenReturn(role);
 

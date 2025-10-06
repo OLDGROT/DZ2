@@ -26,8 +26,6 @@ public class TestHibernateUtil {
 
             configuration.addAnnotatedClass(User.class);
             configuration.addAnnotatedClass(Role.class);
-            configuration.addAnnotatedClass(Avatar.class);
-            configuration.addPackage("org.example.model");
 
             configuration.setProperty("hibernate.connection.url", postgres.getJdbcUrl());
             configuration.setProperty("hibernate.connection.username", postgres.getUsername());

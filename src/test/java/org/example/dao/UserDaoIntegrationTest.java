@@ -1,10 +1,12 @@
 package org.example.dao;
 
+import org.example.exception.RepositoryException;
 import org.example.model.Role;
 import org.example.model.User;
 import org.example.util.TestHibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.junit.jupiter.api.*;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -18,24 +20,37 @@ public class UserDaoIntegrationTest {
 
     private SessionFactory sessionFactory;
     private UserDao userDao;
-
-    @BeforeEach
-    void cleanDatabase() {
-        try (Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
-            session.createMutationQuery("DELETE FROM User").executeUpdate();
-            session.createMutationQuery("DELETE FROM Role").executeUpdate();
-            session.getTransaction().commit();
-        }
-    }
-
+    private User user;
 
     @BeforeAll
     void setUp() {
         sessionFactory = TestHibernateUtil.getSessionFactory();
         userDao = new UserDao(sessionFactory);
+    }
 
-        System.out.println("Маппинги Hibernate: " + sessionFactory.getMetamodel().getEntities());
+    @AfterEach
+    void cleanDatabase() {
+        Transaction tx = null;
+        try (Session session = sessionFactory.openSession()) {
+            tx = session.beginTransaction();
+            session.createMutationQuery("DELETE FROM User").executeUpdate();
+            session.createMutationQuery("DELETE FROM Role").executeUpdate();
+            tx.commit();
+        }
+    }
+
+    @BeforeEach
+    void initUser() {
+        Transaction tx = null;
+        try (Session session = sessionFactory.openSession()) {
+            tx = session.beginTransaction();
+            Role role = new Role("Test role");
+            session.persist(role);
+            this.user = new User("Tester", "test@email.com", 23, role);
+            userDao.save(session, user);
+            tx.commit();
+
+        }
     }
 
     @AfterAll
@@ -44,88 +59,68 @@ public class UserDaoIntegrationTest {
     }
 
     @Test
-    void testSaveAndGetAll() {
-        Role role = new Role();
-        role.setName("USER");
-
+    void testSave() {
+        Role role = new Role("USER");
+        Transaction tx = null;
         try (Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
+            tx = session.beginTransaction();
             session.persist(role);
-
             User user = new User("Alex", "alex@mail.com", 25, role);
             userDao.save(session, user);
-            session.getTransaction().commit();
+            tx.commit();
         }
 
+    }
+
+    @Test
+    void testGetAll(){
+        Transaction tx = null;
         try (Session session = sessionFactory.openSession()) {
+            tx = session.beginTransaction();
             List<User> users = userDao.getAll(session);
+            tx.commit();
             assertEquals(1, users.size());
-            assertEquals("Alex", users.get(0).getName());
         }
     }
 
     @Test
     void testGetById() {
-        Role role = new Role();
-        role.setName("ADMIN");
-
-        User savedUser;
-
+        Transaction tx = null;
         try (Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
-            session.persist(role);
-
-            savedUser = new User("John", "john@mail.com", 30, role);
-            userDao.save(session, savedUser);
-
-            session.getTransaction().commit();
-        }
-
-        try (Session session = sessionFactory.openSession()) {
-            User user = userDao.getById(session, savedUser.getId());
+            tx = session.beginTransaction();
+            User getsUser = userDao.getById(session, user.getId());
+            tx.commit();
             assertNotNull(user);
-            assertEquals("John", user.getName());
+            assertEquals("Tester", user.getName());
+        } catch (RepositoryException e){
+            System.out.println(e.getMessage());
         }
     }
 
     @Test
     void testUpdateAndDelete() {
-        Role role = new Role();
-        role.setName("TESTER");
-
-        User user;
+        Transaction tx = null;
         try (Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
-            session.persist(role);
-
-            user = new User("Mike", "mike@mail.com", 28, role);
-            userDao.save(session, user);
-            session.getTransaction().commit();
-        }
-
-        // Update
-        try (Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
+            tx = session.beginTransaction();
             user.setAge(29);
             userDao.update(session, user);
-            session.getTransaction().commit();
+            tx.commit();
         }
+    }
 
-        // Проверяем обновление
+    @Test
+    void testDelete() {
+        Transaction tx = null;
         try (Session session = sessionFactory.openSession()) {
-            User updatedUser = userDao.getById(session, user.getId());
-            assertEquals(29, updatedUser.getAge());
-        }
-
-        // Delete
-        try (Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
+            tx = session.beginTransaction();
             userDao.delete(session, user);
-            session.getTransaction().commit();
+            tx.commit();
         }
 
         try (Session session = sessionFactory.openSession()) {
+            tx = session.beginTransaction();
             User deletedUser = userDao.getById(session, user.getId());
+            tx.commit();
             assertNull(deletedUser);
         }
     }

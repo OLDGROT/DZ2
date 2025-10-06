@@ -10,6 +10,12 @@ public class Role {
     @Column(nullable = false, name = "name", unique = true)
     private String name;
 
+    public Role(String name) {
+        this.name = name;
+    }
+
+    public Role(){}
+
     public void setId(Long id) {
         this.id = id;
     }
