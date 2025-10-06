@@ -1,0 +1,426 @@
+Index: src/main/java/org/example/model/Role.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.example.model;\r\n\r\nimport jakarta.persistence.*;\r\n\r\n@Entity\r\n@Table(name = \"role\")\r\npublic class Role {\r\n    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)\r\n    private Long id;\r\n    @Column(nullable = false, name = \"name\", unique = true)\r\n    private String name;\r\n\r\n    public void setId(Long id) {\r\n        this.id = id;\r\n    }\r\n\r\n    public Long getId() {\r\n        return id;\r\n    }\r\n\r\n    public String getName() {\r\n        return name;\r\n    }\r\n\r\n    public void setName(String name) {\r\n        this.name = name;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/org/example/model/Role.java b/src/main/java/org/example/model/Role.java
+--- a/src/main/java/org/example/model/Role.java	
++++ b/src/main/java/org/example/model/Role.java	
+@@ -10,6 +10,10 @@
+     @Column(nullable = false, name = "name", unique = true)
+     private String name;
+ 
++    public Role(String name) {
++        this.name = name;
++    }
++
+     public void setId(Long id) {
+         this.id = id;
+     }
+Index: src/main/java/org/example/dao/CourseDao.java
+===================================================================
+diff --git a/src/main/java/org/example/dao/CourseDao.java b/src/main/java/org/example/dao/CourseDao.java
+deleted file mode 100644
+--- a/src/main/java/org/example/dao/CourseDao.java	
++++ /dev/null	
+@@ -1,12 +0,0 @@
+-package org.example.dao;
+-
+-import org.example.model.Course;
+-import org.hibernate.SessionFactory;
+-
+-public class CourseDao extends GenericDaoImpl<Course, Long> {
+-
+-    public CourseDao(SessionFactory sessionFactory, Class<Course> type) {
+-        super(type);
+-    }
+-}
+-
+Index: src/main/java/org/example/dao/UserCoursesDao.java
+===================================================================
+diff --git a/src/main/java/org/example/dao/UserCoursesDao.java b/src/main/java/org/example/dao/UserCoursesDao.java
+deleted file mode 100644
+--- a/src/main/java/org/example/dao/UserCoursesDao.java	
++++ /dev/null	
+@@ -1,11 +0,0 @@
+-package org.example.dao;
+-
+-import org.example.model.UserCourses;
+-import org.hibernate.SessionFactory;
+-
+-public class UserCoursesDao extends GenericDaoImpl<UserCourses, Long> {
+-    public UserCoursesDao(Class<UserCourses> type) {
+-        super( type);
+-    }
+-}
+-
+Index: src/main/java/org/example/model/Course.java
+===================================================================
+diff --git a/src/main/java/org/example/model/Course.java b/src/main/java/org/example/model/Course.java
+deleted file mode 100644
+--- a/src/main/java/org/example/model/Course.java	
++++ /dev/null	
+@@ -1,42 +0,0 @@
+-package org.example.model;
+-
+-
+-import jakarta.persistence.*;
+-
+-import java.time.LocalDateTime;
+-
+-@Entity
+-@Table(name ="course")
+-public class Course {
+-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+-    private Long id;
+-    @Column(name = "name")
+-    private String name;
+-    @Column(name = "created_at")
+-    private LocalDateTime createdAt;
+-
+-    public void setId(Long id) {
+-        this.id = id;
+-    }
+-
+-    public Long getId() {
+-        return id;
+-    }
+-
+-    public String getName() {
+-        return name;
+-    }
+-
+-    public void setName(String name) {
+-        this.name = name;
+-    }
+-
+-    public LocalDateTime getCreated_at() {
+-        return createdAt;
+-    }
+-
+-    @PrePersist
+-    protected void onCreate() {
+-        createdAt = LocalDateTime.now();
+-    }
+-}
+Index: src/main/java/org/example/model/UserCourses.java
+===================================================================
+diff --git a/src/main/java/org/example/model/UserCourses.java b/src/main/java/org/example/model/UserCourses.java
+deleted file mode 100644
+--- a/src/main/java/org/example/model/UserCourses.java	
++++ /dev/null	
+@@ -1,42 +0,0 @@
+-package org.example.model;
+-
+-import jakarta.persistence.*;
+-
+-@Entity
+-@Table(name = "user_course")
+-public class UserCourses {
+-
+-    @Id
+-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+-    private Long id;
+-    @ManyToOne(fetch = FetchType.LAZY)
+-    @JoinColumn(name = "user_id")
+-    private User user;
+-    @ManyToOne(fetch = FetchType.LAZY)
+-    @JoinColumn(name = "course_id")
+-    private Course course;
+-
+-    public void setId(Long id) {
+-        this.id = id;
+-    }
+-
+-    public Long getId() {
+-        return id;
+-    }
+-
+-    public User getUser() {
+-        return user;
+-    }
+-
+-    public void setUser(User user) {
+-        this.user = user;
+-    }
+-
+-    public Course getCourse() {
+-        return course;
+-    }
+-
+-    public void setCourse(Course course) {
+-        this.course = course;
+-    }
+-}
+Index: src/main/java/org/example/model/Avatar.java
+===================================================================
+diff --git a/src/main/java/org/example/model/Avatar.java b/src/main/java/org/example/model/Avatar.java
+deleted file mode 100644
+--- a/src/main/java/org/example/model/Avatar.java	
++++ /dev/null	
+@@ -1,28 +0,0 @@
+-package org.example.model;
+-
+-import jakarta.persistence.*;
+-
+-@Entity
+-@Table(name = "avatar")
+-public class Avatar {
+-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+-    private Long id;
+-    @Column(name = "path")
+-    private String path;
+-
+-    public void setId(Long id) {
+-        this.id = id;
+-    }
+-
+-    public Long getId() {
+-        return id;
+-    }
+-
+-    public String getPath() {
+-        return path;
+-    }
+-
+-    public void setPath(String path) {
+-        this.path = path;
+-    }
+-}
+Index: src/test/java/org/example/service/UserServiceTest.java
+===================================================================
+diff --git a/src/test/java/org/example/service/UserServiceTest.java b/src/test/java/org/example/service/UserServiceTest.java
+deleted file mode 100644
+--- a/src/test/java/org/example/service/UserServiceTest.java	
++++ /dev/null	
+@@ -1,157 +0,0 @@
+-package org.example.service;
+-
+-import jakarta.xml.bind.ValidationException;
+-import org.example.dao.RoleDao;
+-import org.example.dao.UserDao;
+-import org.example.exception.ServiceException;
+-import org.example.model.Role;
+-import org.example.model.User;
+-import org.hibernate.Session;
+-import org.hibernate.SessionFactory;
+-import org.hibernate.Transaction;
+-import org.junit.jupiter.api.*;
+-
+-import org.example.exception.ValidException;
+-
+-import java.time.LocalDateTime;
+-import java.util.Collections;
+-import java.util.List;
+-
+-import static org.junit.jupiter.api.Assertions.*;
+-import static org.mockito.Mockito.*;
+-
+-class UserServiceTest {
+-
+-    private UserDao userDao;
+-    private RoleDao roleDao;
+-    private SessionFactory sessionFactory;
+-    private Session session;
+-    private Transaction transaction;
+-    private UserService userService;
+-
+-    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(UserServiceTest.class);
+-
+-    @BeforeEach
+-    void setUp() {
+-        logger.info("----Начало теста----");
+-        userDao = mock(UserDao.class);
+-        roleDao = mock(RoleDao.class);
+-        sessionFactory = mock(SessionFactory.class);
+-        session = mock(Session.class);
+-        transaction = mock(Transaction.class);
+-
+-        when(sessionFactory.openSession()).thenReturn(session);
+-        when(session.beginTransaction()).thenReturn(transaction);
+-
+-        userService = new UserService(userDao, roleDao, sessionFactory);
+-    }
+-
+-    @Test
+-    void createUserSuccess() {
+-        Role role = new Role();
+-        role.setId(1L);
+-        when(roleDao.getById(session, 1L)).thenReturn(role);
+-
+-        userService.createUser("Alex", "alex@mail.com", 25, 1L );
+-
+-        verify(userDao, times(1)).save(eq(session), any(User.class));
+-        verify(transaction, times(1)).commit();
+-        logger.info("createUserSuccess выполнен успешно");
+-    }
+-
+-    @Test
+-    void createUserRoleNotFoundThrowsServiceException() {
+-        when(roleDao.getById(session, 999L)).thenReturn(null);
+-
+-        assertThrows(ServiceException.class, () ->
+-                userService.createUser("Alex", "alex@mail.com", 25, 999L));
+-
+-        verify(userDao, never()).save(any(), any());
+-        verify(transaction, never()).commit();
+-        logger.info("createUserRoleNotFoundThrowsServiceException выполнен успешно");
+-    }
+-
+-
+-
+-    @Test
+-    void getAllUsersSuccess() {
+-        List<User> users = Collections.singletonList(new User());
+-        when(userDao.getAll(session)).thenReturn(users);
+-
+-        List<User> result = userService.getAllUsers();
+-
+-        assertEquals(1, result.size());
+-        verify(transaction, times(1)).commit();
+-        logger.info("getAllUsersSuccess выполнен успешно");
+-    }
+-
+-    @Test
+-    void updateUserSuccess() {
+-        User user = new User();
+-        user.setId(1L);
+-        user.setName("Alex");
+-        user.setEmail("alex@mail.com");
+-        user.setAge(25);
+-        user.setCreated_at(LocalDateTime.now());
+-
+-        userService.updateUser(user);
+-
+-        verify(userDao, times(1)).update(eq(session), eq(user));
+-        verify(transaction, times(1)).commit();
+-        logger.info("updateUserSuccess выполнен успешно");
+-    }
+-
+-    @Test
+-    void updateUserValidationFails() {
+-        User user = new User();
+-        user.setId(1L);
+-        user.setEmail("");
+-
+-        assertThrows(ValidException.class, () -> userService.updateUser(user));
+-        verify(userDao, never()).update(any(), any());
+-        logger.info("updateUserValidationFails выполнен успешно");
+-    }
+-
+-    @Test
+-    void deleteUserSuccess() {
+-        User user = new User();
+-        user.setId(1L);
+-        user.setName("Alex");
+-        user.setEmail("alex@email.com");
+-
+-        userService.deleteUser(user);
+-
+-        verify(userDao, times(1)).delete(eq(session), eq(user));
+-        verify(transaction, times(1)).commit();
+-        logger.info("deleteUserSuccess выполнен успешно");
+-    }
+-
+-    @Test
+-    void deleteUserValidationFails() {
+-        User user = new User();
+-        user.setId(1L);
+-        user.setEmail("");
+-
+-        assertThrows(ValidException.class, () -> userService.deleteUser(user));
+-        verify(userDao, never()).delete(any(), any());
+-        logger.info("deleteUserValidationFails выполнен успешно");
+-    }
+-
+-    @Test
+-    void getByIdSuccess() {
+-        User user = new User();
+-        user.setId(1L);
+-        when(userDao.getById(session, 1L)).thenReturn(user);
+-
+-        User result = userService.getById(1L);
+-
+-        assertNotNull(result);
+-        verify(transaction, times(1)).commit();
+-        logger.info("getByIdSuccess выполнен успешно");
+-    }
+-
+-    @AfterEach
+-    void tearDown() {
+-        logger.info("----Конец теста----");
+-    }
+-}
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"a6ff035d-c1a3-43b3-8c66-b79d2954cd37\" name=\"Changes\" comment=\"unit\">\r\n      <change afterPath=\"$PROJECT_DIR$/src/test/java/org/example/util/TestHibernateUtil.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/src/test/resources/hibernate.properties\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/logs/app.log\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/logs/app.log\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/main/java/org/example/model/Avatar.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/main/java/org/example/model/Avatar.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/main/java/org/example/model/User.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/main/java/org/example/model/User.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/test/java/org/example/dao/UserDaoIntegrationTest.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/test/java/org/example/dao/UserDaoIntegrationTest.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/test/java/org/example/service/UserServiceTest.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/test/java/org/example/service/UserServiceTest.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/test/resources/hibernate-test.properties\" beforeDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Class\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"PUSH_AUTO_UPDATE\" value=\"true\" />\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n    <option name=\"UPDATE_TYPE\" value=\"REBASE\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\">{\r\n  &quot;lastFilter&quot;: {\r\n    &quot;state&quot;: &quot;OPEN&quot;,\r\n    &quot;assignee&quot;: &quot;OLDGROT&quot;\r\n  }\r\n}</component>\r\n  <component name=\"GithubPullRequestsUISettings\">{\r\n  &quot;selectedUrlAndAccountId&quot;: {\r\n    &quot;url&quot;: &quot;https://github.com/OLDGROT/DZ2.git&quot;,\r\n    &quot;accountId&quot;: &quot;16f34a32-7d62-4903-a84c-90dbfacf7cb7&quot;\r\n  }\r\n}</component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 1\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"33HA0eEJ3zUiPn0ZlShZlwzPBq0\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;Application.Main.executor&quot;: &quot;Run&quot;,\r\n    &quot;Maven.DZ2 [clean].executor&quot;: &quot;Run&quot;,\r\n    &quot;Maven.DZ2 [test].executor&quot;: &quot;Run&quot;,\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;prod&quot;,\r\n    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,\r\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\r\n    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/sasha/IdeaProjects/DZ2/src/main/java/org/example/Main.java&quot;,\r\n    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,\r\n    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,\r\n    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,\r\n    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.editor&quot;,\r\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\r\n  },\r\n  &quot;keyToStringList&quot;: {\r\n    &quot;DatabaseDriversLRU&quot;: [\r\n      &quot;postgresql&quot;\r\n    ]\r\n  }\r\n}</component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"CreateClassDialog.RecentsKey\">\r\n      <recent name=\"org.example.exception\" />\r\n    </key>\r\n    <key name=\"MoveClassesOrPackagesDialog.RECENTS_KEY\">\r\n      <recent name=\"org.example.util\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"RunManager\">\r\n    <configuration name=\"Main\" type=\"Application\" factoryName=\"Application\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"org.example.Main\" />\r\n      <module name=\"DZ2\" />\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.19416.15\" />\r\n        <option value=\"bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.19416.15\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"a6ff035d-c1a3-43b3-8c66-b79d2954cd37\" name=\"Changes\" comment=\"\" />\r\n      <created>1758963403585</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1758963403585</updated>\r\n      <workItem from=\"1758963404863\" duration=\"1915000\" />\r\n      <workItem from=\"1759069564072\" duration=\"10582000\" />\r\n      <workItem from=\"1759158447918\" duration=\"3938000\" />\r\n      <workItem from=\"1759187128067\" duration=\"2379000\" />\r\n      <workItem from=\"1759268521825\" duration=\"299000\" />\r\n      <workItem from=\"1759275283934\" duration=\"12000\" />\r\n      <workItem from=\"1759275610565\" duration=\"119000\" />\r\n      <workItem from=\"1759276466364\" duration=\"2297000\" />\r\n      <workItem from=\"1759328691405\" duration=\"233000\" />\r\n      <workItem from=\"1759474195974\" duration=\"11510000\" />\r\n      <workItem from=\"1759693167171\" duration=\"846000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"Улучшен GenericDaoImpl&#10;Всё запихано в транзакции\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1759277869561</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1759277869561</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"Управление транзакциями перенесенно в сервисы, добавлена валидация\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1759478192173</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1759478192173</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00003\" summary=\"unit\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1759662796617</created>\r\n      <option name=\"number\" value=\"00003\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1759662796617</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"4\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"Улучшен GenericDaoImpl&#10;Всё запихано в транзакции\" />\r\n    <MESSAGE value=\"Управление транзакциями перенесенно в сервисы, добавлена валидация\" />\r\n    <MESSAGE value=\"unit\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"unit\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	
++++ b/.idea/workspace.xml	
+@@ -4,16 +4,16 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="a6ff035d-c1a3-43b3-8c66-b79d2954cd37" name="Changes" comment="unit">
+-      <change afterPath="$PROJECT_DIR$/src/test/java/org/example/util/TestHibernateUtil.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/src/test/resources/hibernate.properties" afterDir="false" />
++    <list default="true" id="a6ff035d-c1a3-43b3-8c66-b79d2954cd37" name="Changes" comment="ит">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/logs/app.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/app.log" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/Avatar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/model/Avatar.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/model/User.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/dao/CourseDao.java" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/dao/UserCoursesDao.java" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/Avatar.java" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/Course.java" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/Role.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/model/Role.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/UserCourses.java" beforeDir="false" />
+       <change beforePath="$PROJECT_DIR$/src/test/java/org/example/dao/UserDaoIntegrationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/dao/UserDaoIntegrationTest.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/service/UserServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/service/UserServiceTest.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/src/test/resources/hibernate-test.properties" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/service/UserServiceTest.java" beforeDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -125,7 +125,7 @@
+       <workItem from="1759276466364" duration="2297000" />
+       <workItem from="1759328691405" duration="233000" />
+       <workItem from="1759474195974" duration="11510000" />
+-      <workItem from="1759693167171" duration="846000" />
++      <workItem from="1759693167171" duration="2073000" />
+     </task>
+     <task id="LOCAL-00001" summary="Улучшен GenericDaoImpl&#10;Всё запихано в транзакции">
+       <option name="closed" value="true" />
+@@ -151,7 +151,15 @@
+       <option name="project" value="LOCAL" />
+       <updated>1759662796617</updated>
+     </task>
+-    <option name="localTasksCounter" value="4" />
++    <task id="LOCAL-00004" summary="ит">
++      <option name="closed" value="true" />
++      <created>1759694283490</created>
++      <option name="number" value="00004" />
++      <option name="presentableId" value="LOCAL-00004" />
++      <option name="project" value="LOCAL" />
++      <updated>1759694283490</updated>
++    </task>
++    <option name="localTasksCounter" value="5" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -161,6 +169,7 @@
+     <MESSAGE value="Улучшен GenericDaoImpl&#10;Всё запихано в транзакции" />
+     <MESSAGE value="Управление транзакциями перенесенно в сервисы, добавлена валидация" />
+     <MESSAGE value="unit" />
+-    <option name="LAST_COMMIT_MESSAGE" value="unit" />
++    <MESSAGE value="ит" />
++    <option name="LAST_COMMIT_MESSAGE" value="ит" />
+   </component>
+ </project>
+\ No newline at end of file
